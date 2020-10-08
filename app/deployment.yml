@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      name: app
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app
+          image: arturgssjr/api-consulta-bigdata:latest
+          command:
+            [
+              "/bin/sh",
+              "-c",
+              "ln -s /var/www /usr/share/nginx; /var/www/docker-entrypoint.sh; php-fpm;",
+            ]
+          envFrom:
+            - configMapRef:
+                name: app-configmap
+            - secretRef:
+                name: app-secret
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: app-configmap
+              mountPath: /var/www/.env
+              subPath: .env
+      volumes:
+        - name: app-configmap
+          configMap:
+            name: app-configmap
+            items:
+              - key: env
+                path: .env

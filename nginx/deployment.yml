@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          command:
+            [
+              "/bin/sh",
+              "-c",
+              "touch /usr/share/nginx/html/index.php; nginx -g 'daemon off;'",
+            ]
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-configmap
+              readOnly: true
+      volumes:
+        - name: nginx-configmap
+          configMap:
+            name: nginx-configmap
+            items:
+              - key: nginx.conf
+                path: nginx.conf

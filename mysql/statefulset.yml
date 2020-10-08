@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-server
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  serviceName: mysql-statefulset
+  selector:
+    matchLabels:
+      app: mysql-server
+      tier: db
+  template:
+    metadata:
+      labels:
+        app: mysql-server
+        tier: db
+    spec:
+      containers:
+        - name: mysql-container
+          image: mysql:5.7
+          args:
+            - "--ignore-db-dir=lost+found"
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: "/var/lib/mysql"
+              name: mysql-data
+          envFrom:
+            - secretRef:
+                name: mysql-secret
+            - configMapRef:
+                name: mysql-configmap
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc

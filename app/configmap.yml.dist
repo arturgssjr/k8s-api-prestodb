@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-configmap
+data:
+  env: |
+    APP_NAME=
+    APP_ENV=
+    APP_KEY=
+    APP_DEBUG=
+    APP_URL=
+    APP_LOCALE=
+    APP_TIMEZONE=
+    LOG_CHANNEL=
+    DB_CONNECTION=
+    DB_HOST=
+    DB_PORT=
+
+    PRESTO_HOST=
+    PRESTO_PORT=
+
+    BROADCAST_DRIVER=
+    CACHE_DRIVER=
+    QUEUE_CONNECTION=
+    SESSION_CONNECTION=
+    SESSION_DRIVER=
+    SESSION_LIFETIME=
+
+    REDIS_HOST=
+    REDIS_CLIENT=
+    REDIS_PORT=
+
+    GRAYLOG_HOST=
+    GRAYLOG_PORT=
+
+    MAIL_MAILER=
+    MAIL_HOST=
+    MAIL_PORT=
+    MAIL_ENCRYPTION=
+    MAIL_FROM_ADDRESS=
+    MAIL_FROM_NAME=
+
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    AWS_DEFAULT_REGION=
+    AWS_BUCKET=
+    PUSHER_APP_ID=
+    PUSHER_APP_KEY=
+    PUSHER_APP_SECRET=
+    PUSHER_APP_CLUSTER=
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configmap
+data:
+  nginx.conf: |
+    server {
+        listen 80;
+        index index.php index.html index.htm;
+        root /usr/share/nginx/html;
+        location ~ \.php$ {
+            try_files $uri =404;
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_pass app-service:9000;
+            fastcgi_index index.php;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+        }
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
+            gzip_static on;
+        }
+    }
