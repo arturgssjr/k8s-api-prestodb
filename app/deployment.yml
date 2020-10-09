@@ -15,12 +15,7 @@ spec:
       containers:
         - name: app
           image: arturgssjr/api-consulta-bigdata:latest
-          command:
-            [
-              "/bin/sh",
-              "-c",
-              "ln -s /var/www /usr/share/nginx; /var/www/docker-entrypoint.sh; php-fpm;",
-            ]
+          command: ["/bin/sh", "-c", "/var/www/docker/php-fpm/entrypoint.sh"]
           envFrom:
             - configMapRef:
                 name: app-configmap
@@ -31,12 +26,18 @@ spec:
               memory: "128Mi"
               cpu: "100m"
           ports:
-            - containerPort: 80
+            - containerPort: 9000
+              protocol: TCP
           volumeMounts:
             - name: app-configmap
               mountPath: /var/www/.env
               subPath: .env
+            - name: code
+              mountPath: /code
       volumes:
+        - name: code
+          persistentVolumeClaim:
+            claimName: code
         - name: app-configmap
           configMap:
             name: app-configmap
