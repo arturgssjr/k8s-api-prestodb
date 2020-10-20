@@ -15,7 +15,7 @@ spec:
       containers:
         - name: app
           image: arturgssjr/api-consulta-bigdata:latest
-          command: ["/bin/sh", "-c", "/var/www/docker/php-fpm/entrypoint.sh"]
+          command: ["/bin/sh", "-c", "/app/docker/php-fpm/entrypoint.sh"]
           envFrom:
             - configMapRef:
                 name: app-configmap
@@ -30,7 +30,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: app-configmap
-              mountPath: /var/www/.env
+              mountPath: /app/.env
               subPath: .env
             - name: code
               mountPath: /code

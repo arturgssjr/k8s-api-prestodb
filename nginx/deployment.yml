@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx:alpine
+          image: arturgssjr/api-consulta-bigdata:nginx
           resources:
             limits:
               memory: "128Mi"
@@ -23,15 +23,7 @@ spec:
           volumeMounts:
             - name: code
               mountPath: /code
-            - name: nginx-configmap
-              mountPath: /etc/nginx/conf.d
       volumes:
         - name: code
           persistentVolumeClaim:
             claimName: code
-        - name: nginx-configmap
-          configMap:
-            name: nginx-configmap
-            items:
-              - key: config
-                path: default.conf
