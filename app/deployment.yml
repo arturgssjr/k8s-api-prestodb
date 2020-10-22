@@ -33,7 +33,7 @@ spec:
               mountPath: /app/.env
               subPath: .env
             - name: code
-              mountPath: /code
+              mountPath: /var/www
       volumes:
         - name: code
           persistentVolumeClaim:

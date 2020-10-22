@@ -22,7 +22,7 @@ spec:
             - containerPort: 80
           volumeMounts:
             - name: code
-              mountPath: /code
+              mountPath: /var/www
       volumes:
         - name: code
           persistentVolumeClaim:
